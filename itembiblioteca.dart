@@ -55,4 +55,73 @@ class ItemBiblioteca {
             }
         }
     }
+
+    // Método para realizar a devolução de livros e revistas
+    void devolver(Cliente cliente){
+        // Variável booleana para verificar se existe qualquer empréstimo desse item para esse cliente
+        bool existeEmprestimo = emprestimos.any((emp) => emp.cliente == cliente);
+
+        if(existeEmprestimo == false){
+            print('Não há empréstimos desse livro no nome deste cliente.\n');
+            return;
+        }
+
+        // Encontra o primeiro empréstimo desse item que esteja no nome do cliente em questão
+        var emprestimoAtual = emprestimos.firstWhere((emp) => emp.cliente == cliente);
+
+        print('Insira a data da devolução do item ${titulo} emprestada para o cliente ${cliente.nome}: (AAAA-MM-DD)');
+        String? entrada;
+        entrada = stdin.readLineSync();
+
+        // Verifica se a entrada não é null
+        if(entrada != null){
+            try{
+                // Atribui a entrada da data (String) para uma variável do tipo DateTime
+                DateTime data = DateTime.parse(entrada);
+                
+                // Calcula a quantidade de dias em que o item esteve emprestado
+                int dias = data.difference(emprestimoAtual.dataEmprestimo).inDays;
+
+                // Verifica se a data informada é uma data correta, não podendo ser anterior a data informada no empréstimo
+                while(dias < 0){
+                    print('Data inválida! A data de devolução não pode ser anterior a data de empréstimo');
+                    entrada = stdin.readLineSync();
+                    if (entrada != null) {
+                        data = DateTime.parse(entrada);
+                        dias = data.difference(emprestimoAtual.dataEmprestimo).inDays;
+                    }
+                    else{
+                        return;
+                    }
+                };
+
+                // Por padrão, adotei que um cliente deve devolver o item em até 14 dias da data do empréstimo
+                dias = dias - 14; 
+                double valorTotal;
+                
+                // Calcula o valor total
+                if(dias > 0){
+                    valorTotal = (dias * preco_dia) + preco_emprestimo;
+                }
+                else{
+                    valorTotal = preco_emprestimo;
+                    dias = 0;
+                }
+                
+                // Devolve o livro emprestado e remove da lista de empréstimos 
+                qntcopias += 1;
+                emprestimos.remove(emprestimoAtual);
+                print('===============================================================');
+                print('A devolução do item:\nTÍTULO: ${titulo}\nANO DE LANÇAMENTO: ${ano}\nCÓPIAS NO ESTOQUE: ${qntcopias}\nPREÇO DO EMPRÉSTIMO: R\$${preco_emprestimo}\nPREÇO POR DIA DE MULTA: R\$${preco_dia}\n\nFoi realizada com sucesso na data ${data.toString().split(' ')[0]} pelo cliente ${cliente.nome}!');
+                print('Quantidade de dias multados: ${dias}');
+                print('Valor total: R\$${valorTotal}');
+                print('===============================================================');
+            }
+            catch(e){
+                // Caso tenha algum erro com a data aborta o método com return
+                print('Ocorreu um erro inesperado $e\n');
+                return;
+            }
+        }
+    }
 }
