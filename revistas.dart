@@ -2,7 +2,7 @@ import './itembiblioteca.dart';
 
 class Revistas extends ItemBiblioteca{
     int numero_edicao;
-    int mes;
+    String mes;
 
     Revistas({
         required this.numero_edicao, 

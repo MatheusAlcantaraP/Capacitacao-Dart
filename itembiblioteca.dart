@@ -12,6 +12,7 @@ class ItemBiblioteca {
 
     //Lista que vai guardar os empréstimos ativos da biblioteca
     List<Emprestimo> emprestimos = [];
+    static List<ItemBiblioteca> estoque = [];
 
     // Construtor da classe ItemBiblioteca
     ItemBiblioteca({
@@ -123,5 +124,21 @@ class ItemBiblioteca {
                 return;
             }
         }
+    }
+
+    // Método para listar todos os livros e revistas no estoque 
+    static void listarLivros(){
+        // Verifica se o estoque não está vázio
+        if(estoque.isEmpty){
+            print('O estoque de livros da biblioteca está sem nenhum livro!');
+            return;
+        }
+        print('-----------ESTOQUE-----------');
+        
+        // Percorre a lista do estoque e imprime os detalhes de todos os itens
+        for (var livros in estoque){
+            print('TITULO: ${livros.titulo}\nANO: ${livros.ano}\nCÓPIAS NO ESTOQUE: ${livros.qntcopias}\nPREÇO POR EMPRÉSTIMO: ${livros.preco_emprestimo}\nPREÇO POR DIA DE MULTA: ${livros.preco_dia}\n');
+        }
+
     }
 }
